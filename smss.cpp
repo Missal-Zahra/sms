@@ -64,6 +64,8 @@ int residentcount = 0;
 string complaints[TOTAL_USER];
 bool complaintresolved[TOTAL_USER];
 int complaintcount =0 ;
+string complaintuser[TOTAL_USER];
+string maintenanceuser[TOTAL_USER];
 
 string maintaincereq [TOTAL_USER];
 bool maintainceresolved [TOTAL_USER];
@@ -154,16 +156,17 @@ int main (){
 //-------------functions starts------------------
 string login_user(){ 
     mainheader ();        //-----this function decides wheather the logged person is admin or user
-    string username;
+    string username, password;
     cout<<"ENTER YOUR USERNAME: ";
     cin>>username;
     cout<<"ENTER YOUR PASSWORD: ";
-    string password;
     cin>>password;
-     for (int i =0 ; i<TOTAL_USER; i++){
-        if (usernameA[i]== username && passwordA[i]== password)
-        return rolesA[i];
-     }
+    for (int i = 0 ; i < user_count ; i++){
+        if (usernameA[i] == username && passwordA[i] == password){
+            currentuser = username;  //
+            return rolesA[i];
+        }
+    }
     return "INVALID";
 }
 
@@ -324,7 +327,6 @@ void postannouncements (){
     getline (cin, announcements[announcemnetcount]);
     announcemnetcount ++;
     cout<<"ANNOOUNCEMNET POSTED\n";
-
 }
 //----------------------this function helps residents to view the announcements
 void viewannouncements (){
@@ -332,6 +334,7 @@ void viewannouncements (){
     for (int i =0; i <announcemnetcount; i++)
         cout<<i + 1 << " ." << announcements[i]<<endl;
 }
+
 // this functionm helps the admin to view the complaints
 void viewcomplaints (){
         if (complaintcount == 0) cout << "No complaints.\n";
@@ -402,7 +405,7 @@ else {
 }
 //--------------this function hepls the admin to view the complain status/ to check the complaints 
 void viewcomplainstatus (){
-        bool found = false;
+    bool found = false;
     for (int i = 0; i < complaintcount; i++) {
         if (complaints[i].find(currentuser) != string::npos) {
             cout << complaints[i] << " - "
@@ -414,7 +417,7 @@ void viewcomplainstatus (){
 }
 //----------------------this function helps the admin to view the maintainace status 
 void viewmaintainancestatus (){
-        bool found = false;
+    bool found = false;
     for (int i = 0; i < maintaincecount; i++) {
         if (maintaincereq[i].find(currentuser) != string::npos) {
             cout << maintaincereq[i] << " - "
@@ -470,12 +473,14 @@ void viewresidentsdues (){
 }
 //------------------------this function helps  to find the resident's index  by their username
 int  findresidentindexbyusername(string username){
-        for (int i = 0; i < user_count; i++) {
-        if (usernameA[i] == username && rolesA[i] == "RESIDENT")
-            return i - 1; // match order
+    for (int i = 0, r = 0; i < user_count; i++) {
+        if (rolesA[i] == "RESIDENT") {
+            if (usernameA[i] == username)
+                return r;
+            r++;
+        }
     }
     return -1;
-
 }
 //---------------------this function helps to find the the resiident's index by their names
 int findresidentindexbyname(string name){
@@ -531,4 +536,5 @@ void sortresidentsbyname(){
 }
 
 //-------------functions ends---------------------
+
 
